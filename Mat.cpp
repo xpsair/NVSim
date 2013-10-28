@@ -120,6 +120,13 @@ void Mat::Initialize(int _numRowSubarray, int _numColumnSubarray, int _numAddres
 	if (memoryType == tag)
 		numColumn *= numWay;
 
+        //Qing: for data array, numColumn must be times of 64b
+        if (memoryType == data && (numColumn % 64 > 0)) {
+		invalid = true;
+		initialized = true;
+		return;
+	}
+
 	subarray.Initialize(numRow, numColumn, numRowPerSet > 1, true /* TO-DO: need to correct */,
 			muxSenseAmp, internalSenseAmp, muxOutputLev1, muxOutputLev2, areaOptimizationLevel);
 

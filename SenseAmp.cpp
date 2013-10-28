@@ -72,10 +72,15 @@ void SenseAmp::CalculateArea() {
 	} else if (invalid) {
 		height = width = area = 1e41;
 	} else {
+	    
+//Qing: replace the default SA
+#if 0
 		height = width = area = 0;
+		
 		if (currentSense) {	/* current-sensing needs IV converter */
-			area += IV_CONVERTER_AREA * tech->featureSize * tech->featureSize;
+		    area += IV_CONVERTER_AREA * tech->featureSize * tech->featureSize;
 		}
+		
 		/* the following codes are transformed from CACTI 6.5 */
 		double tempHeight = 0;
 		double tempWidth = 0;
@@ -111,6 +116,37 @@ void SenseAmp::CalculateArea() {
 		width *= numColumn;
 
 		area = height * width;
+#endif
+
+		height = width = area = 0;
+		double tempHeight = 0;
+		double tempWidth = 0;
+
+		CalculateGateArea(INV, 1, 0, W_SA_TOP * tech->featureSize,
+				pitchSenseAmp, *tech, &tempWidth, &tempHeight);
+		width = MAX(width, tempWidth);
+		height += tempHeight;
+		
+		CalculateGateArea(INV, 1, 0, W_SA_P * tech->featureSize,
+				pitchSenseAmp, *tech, &tempWidth, &tempHeight);
+		width = MAX(width, tempWidth);
+		height += 2 * tempHeight;
+		
+		CalculateGateArea(INV, 1, W_SA_N * tech->featureSize, 0,
+				pitchSenseAmp, *tech, &tempWidth, &tempHeight);
+		width = MAX(width, tempWidth);
+		height += 2 * tempHeight;
+		
+		CalculateGateArea(INV, 1, W_SA_BOT * tech->featureSize, 0,
+				pitchSenseAmp, *tech, &tempWidth, &tempHeight);
+		width = MAX(width, tempWidth);
+		height += 2 * tempHeight;
+
+		/* transformation so that width meets the pitch */
+		height = height * width / pitchSenseAmp;
+		width = pitchSenseAmp * numColumn;
+		area = height * width;
+//Qing.
 	}
 }
 
@@ -120,11 +156,20 @@ void SenseAmp::CalculateRC() {
 	} else if (invalid) {
 		readLatency = writeLatency = 1e41;
 	} else {
+//Qing: replace the default SA
+#if 0
 		capLoad = CalculateGateCap((W_SENSE_P + W_SENSE_N) * tech->featureSize, *tech)
 				+ CalculateDrainCap(W_SENSE_N * tech->featureSize, NMOS, pitchSenseAmp, *tech)
 				+ CalculateDrainCap(W_SENSE_P * tech->featureSize, PMOS, pitchSenseAmp, *tech)
 				+ CalculateDrainCap(W_SENSE_ISO * tech->featureSize, PMOS, pitchSenseAmp, *tech)
 				+ CalculateDrainCap(W_SENSE_MUX * tech->featureSize, NMOS, pitchSenseAmp, *tech);
+#endif
+		capLoad = CalculateGateCap((W_SA_P + W_SA_N) * tech->featureSize, *tech)
+				+ CalculateDrainCap(W_SA_N * tech->featureSize, NMOS, pitchSenseAmp, *tech)
+				+ CalculateDrainCap(W_SA_P * tech->featureSize, PMOS, pitchSenseAmp, *tech)
+				+ CalculateDrainCap(W_SA_TOP * tech->featureSize, PMOS, pitchSenseAmp, *tech)
+				+ CalculateDrainCap(W_SA_BOT * tech->featureSize, NMOS, pitchSenseAmp, *tech);
+//Qing.
 	}
 }
 
@@ -133,7 +178,9 @@ void SenseAmp::CalculateLatency(double _rampInput) {	/* _rampInput is actually n
 		cout << "[Sense Amp] Error: Require initialization first!" << endl;
 	} else {
 		readLatency = writeLatency = 0;
-		if (currentSense) {	/* current-sensing needs IV converter */
+		
+		//Qing: re-model the current S/A
+		if (currentSense) {
 			/* all the following values achieved from HSPICE */
 			if (tech->featureSize >= 119e-9)
 				readLatency += 0.49e-9;		/* 120nm */
@@ -146,14 +193,18 @@ void SenseAmp::CalculateLatency(double _rampInput) {	/* _rampInput is actually n
 			else if (tech->featureSize >= 31e-9)
 				readLatency += 1.07e-9;		/* 32nm */
 			else
-				readLatency += 1.45e-9;     /* below 22nm */
+			    //Qing: use new S/A number
+				//readLatency += 1.45e-9;     /* below 22nm */
+				readLatency += 1.0e-10;     /* below 22nm */
 		}
-
-		/* Voltage sense amplifier */
-		double gm = CalculateTransconductance(W_SENSE_N * tech->featureSize, NMOS, *tech)
+		else {
+		    /* Voltage sense amplifier */
+		    double gm = CalculateTransconductance(W_SENSE_N * tech->featureSize, NMOS, *tech)
 				+ CalculateTransconductance(W_SENSE_P * tech->featureSize, PMOS, *tech);
-		double tau = capLoad / gm;
-		readLatency += tau * log(tech->vdd / senseVoltage);
+			double tau = capLoad / gm;
+			readLatency += tau * log(tech->vdd / senseVoltage);
+		}
+		//Qing.
 	}
 }
 
@@ -165,7 +216,9 @@ void SenseAmp::CalculatePower() {
 	} else {
 		readDynamicEnergy = writeDynamicEnergy = 0;
 		leakage = 0;
-		if (currentSense) {	/* current-sensing needs IV converter */
+		
+		//Qing: re-model the current S/A
+		if (currentSense) {
 			/* all the following values achieved from HSPICE */
 			if (tech->featureSize >= 119e-9) {			/* 120nm */
 				readDynamicEnergy += 8.52e-14;	/* Unit: J */
@@ -182,18 +235,23 @@ void SenseAmp::CalculatePower() {
 			} else if (tech->featureSize >= 31e-9) {	/* 32nm */
 				readDynamicEnergy += 12.56e-14;
 				leakage += 12.54e-8;
-			} else {                                    /* TO-DO, need calibration below 22nm */
-				readDynamicEnergy += 15e-14;
-				leakage += 15e-8;
+			} else {    /* TO-DO, need calibration below 22nm */
+			    //Qing: use new S/A numbers
+				//readDynamicEnergy += 15e-14;
+				readDynamicEnergy += 8e-15;
+				//leakage += 15e-8;
+				leakage += 0;
 			}
 		}
-
-		/* Voltage sense amplifier */
-		readDynamicEnergy += capLoad * tech->vdd * tech->vdd;
-		double idleCurrent =  CalculateGateLeakage(INV, 1, W_SENSE_EN * tech->featureSize, 0,
+		else {
+		    /* Voltage sense amplifier */
+		    readDynamicEnergy += capLoad * tech->vdd * tech->vdd;
+		    double idleCurrent =  CalculateGateLeakage(INV, 1, W_SENSE_EN * tech->featureSize, 0,
 				inputParameter->temperature, *tech) * tech->vdd;
-		leakage += idleCurrent * tech->vdd;
-
+			leakage += idleCurrent * tech->vdd;
+		}
+		//Qing.
+		
 		readDynamicEnergy *= numColumn;
 		leakage *= numColumn;
 	}

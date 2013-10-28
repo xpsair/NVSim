@@ -71,11 +71,17 @@
 #define AVG_RATIO_LEAK_2INPUT_NOR  0.95
 #define AVG_RATIO_LEAK_3INPUT_NOR  0.62
 
-#define W_SENSE_P		7.5
-#define W_SENSE_N		3.75
-#define W_SENSE_ISO		12.5
-#define W_SENSE_EN		5.0
-#define W_SENSE_MUX		9.0
+#define W_SENSE_P       7.5
+#define W_SENSE_N       3.75
+#define W_SENSE_ISO     12.5
+#define W_SENSE_EN      5.0
+#define W_SENSE_MUX     9.0
+//Qing: new S/A numbers
+#define W_SA_TOP        40
+#define W_SA_P          2
+#define W_SA_N          2
+#define W_SA_BOT        20
+//Qing.
 #define VBITSENSEMIN	0.08
 #define IV_CONVERTER_AREA 50000 /*TO-DO: technology and design dependent parameter, 649606 is used in PCRAMSim*/
 

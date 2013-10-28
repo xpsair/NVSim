@@ -396,11 +396,11 @@ void Result::print() {
 
 	cout << " -  Read Dynamic Energy = " << TO_JOULE(bank->readDynamicEnergy) << endl;
 	if (inputParameter->routingMode == h_tree)
-		cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->readDynamicEnergy - bank->mat.readDynamicEnergy
+		cout << " |--- H-Tree Read Dynamic Energy = " << TO_JOULE(bank->readDynamicEnergy - bank->mat.readDynamicEnergy
 													* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 													<< endl;
 	else
-		cout << " |--- Non-H-Tree Dynamic Energy = " << TO_JOULE(bank->readDynamicEnergy - bank->mat.readDynamicEnergy
+		cout << " |--- Non-H-Tree Read Dynamic Energy = " << TO_JOULE(bank->readDynamicEnergy - bank->mat.readDynamicEnergy
 													* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 													<< endl;
 	cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.readDynamicEnergy) << " per mat" << endl;
@@ -426,11 +426,11 @@ void Result::print() {
 			(cell->memCellType == memristor && (cell->accessType == CMOS_access || cell->accessType == BJT_access))) {
 		cout << " - RESET Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy) << endl;
 		if (inputParameter->routingMode == h_tree)
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		else
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.resetDynamicEnergy) << " per mat" << endl;
@@ -448,11 +448,11 @@ void Result::print() {
 		cout << "       |--- Cell RESET Dynamic Energy  = " << TO_JOULE(bank->mat.subarray.cellResetEnergy) << endl;
 		cout << " - SET Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy) << endl;
 		if (inputParameter->routingMode == h_tree)
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		else
-			cout << " |--- Non-H-Tree Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
+			cout << " |--- Non-H-Tree Write Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.setDynamicEnergy) << " per mat" << endl;
@@ -471,11 +471,11 @@ void Result::print() {
 	} else if (cell->memCellType == SLCNAND) {
 		cout << " - Erase Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy) << " per block" << endl;
 		if (inputParameter->routingMode == h_tree)
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		else
-			cout << " |--- Non-H-Tree Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
+			cout << " |--- Non-H-Tree Write Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy - bank->mat.resetDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.resetDynamicEnergy) << " per mat" << endl;
@@ -492,11 +492,11 @@ void Result::print() {
 														+ bank->mat.subarray.senseAmpMuxLev2.writeDynamicEnergy) << endl;
 		cout << " - Programming Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy) << " per page" << endl;
 		if (inputParameter->routingMode == h_tree)
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		else
-			cout << " |--- Non-H-Tree Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
+			cout << " |--- Non-H-Tree Write Dynamic Energy = " << TO_JOULE(bank->setDynamicEnergy - bank->mat.setDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.setDynamicEnergy) << " per mat" << endl;
@@ -514,11 +514,11 @@ void Result::print() {
 	} else {
 		cout << " - Write Dynamic Energy = " << TO_JOULE(bank->writeDynamicEnergy) << endl;
 		if (inputParameter->routingMode == h_tree)
-			cout << " |--- H-Tree Dynamic Energy = " << TO_JOULE(bank->writeDynamicEnergy - bank->mat.writeDynamicEnergy
+			cout << " |--- H-Tree Write Dynamic Energy = " << TO_JOULE(bank->writeDynamicEnergy - bank->mat.writeDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		else
-			cout << " |--- Non-H-Tree Dynamic Energy = " << TO_JOULE(bank->writeDynamicEnergy - bank->mat.writeDynamicEnergy
+			cout << " |--- Non-H-Tree Write Dynamic Energy = " << TO_JOULE(bank->writeDynamicEnergy - bank->mat.writeDynamicEnergy
 														* bank->numActiveMatPerColumn * bank->numActiveMatPerRow)
 														<< endl;
 		cout << " |--- Mat Dynamic Energy    = " << TO_JOULE(bank->mat.writeDynamicEnergy) << " per mat" << endl;
