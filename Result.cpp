@@ -308,6 +308,10 @@ void Result::print() {
 			<< cell->area * tech->featureSize * tech->featureSize * bank->capacity / bank->numRowMat
 			/ bank->numColumnMat / bank->numRowSubarray / bank->numColumnSubarray
 			/ bank->mat.subarray.area * 100 << "%)" <<endl;
+	//Qing: subarray buffer area
+	cout << " |--- Subarray Buffer Area = " << TO_METER(bank->mat.subarray.subarrayBuffer.height) << " x "
+			<< TO_METER(bank->mat.subarray.subarrayBuffer.width) << " = " << TO_SQM(bank->mat.subarray.subarrayBuffer.area) <<endl;
+	//Qing.
 	cout << " - Area Efficiency = " << cell->area * tech->featureSize * tech->featureSize
 			* bank->capacity / bank->area * 100 << "%" << endl;
 
@@ -384,6 +388,11 @@ void Result::print() {
 		cout << "       |--- Charge Latency      = " << TO_SECOND(bank->mat.subarray.chargeLatency) << endl;
 	}
 
+	//Qing: subarray buffer latency
+	cout << "- Subarray Buf R/W Latency  = " << TO_SECOND(bank->mat.subarray.subarrayBuffer.readLatency) << endl;
+	cout << "- Subarray Buf XOR Latency  = " << TO_SECOND(bank->mat.subarray.subarrayBuffer.xorLatency) << endl;
+	//Qing.
+	
 	double readBandwidth = (double)bank->blockSize /
 			(bank->mat.subarray.readLatency - bank->mat.subarray.rowDecoder.readLatency
 			+ bank->mat.subarray.precharger.readLatency) / 8;
@@ -421,7 +430,7 @@ void Result::print() {
 													+ bank->mat.subarray.senseAmpMuxLev1.readDynamicEnergy
 													+ bank->mat.subarray.senseAmpMuxLev2.readDynamicEnergy) << endl;
 	cout << "       |--- Precharge Dynamic Energy   = " << TO_JOULE(bank->mat.subarray.precharger.readDynamicEnergy) << endl;
-
+	
 	if (cell->memCellType == PCRAM || cell->memCellType == FBRAM ||
 			(cell->memCellType == memristor && (cell->accessType == CMOS_access || cell->accessType == BJT_access))) {
 		cout << " - RESET Dynamic Energy = " << TO_JOULE(bank->resetDynamicEnergy) << endl;
@@ -538,6 +547,11 @@ void Result::print() {
 		}
 	}
 
+	//Qing: subarray buffer energy
+	cout << "- Subarray Buf R/W Energy = " << TO_JOULE(bank->mat.subarray.subarrayBuffer.readDynamicEnergy) << endl;
+	cout << "- Subarray Buf XOR Energy = " << TO_JOULE(bank->mat.subarray.subarrayBuffer.xorDynamicEnergy) << endl;
+	//Qing.
+	
 	cout << " - Leakage Power = " << TO_WATT(bank->leakage) << endl;
 	if (inputParameter->routingMode == h_tree)
 		cout << " |--- H-Tree Leakage Power = " << TO_WATT(bank->leakage - bank->mat.leakage

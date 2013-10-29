@@ -43,6 +43,7 @@
 #include "Precharger.h"
 #include "SenseAmp.h"
 #include "Mux.h"
+#include "Buffer.h"    //Qing
 #include "typedef.h"
 
 class SubArray: public FunctionUnit {
@@ -99,15 +100,17 @@ public:
 	double bitlineDelayOn;  /* Bitline delay of LRS, Unit: s */
 	double bitlineDelayOff; /* Bitline delay of HRS, Unit: s */
 
-	RowDecoder	rowDecoder;
-	RowDecoder	bitlineMuxDecoder;
-	Mux			bitlineMux;
-	RowDecoder	senseAmpMuxLev1Decoder;
-	Mux			senseAmpMuxLev1;
-	RowDecoder	senseAmpMuxLev2Decoder;
-	Mux			senseAmpMuxLev2;
-	Precharger	precharger;
-	SenseAmp	senseAmp;
+	RowDecoder    rowDecoder;
+	RowDecoder    bitlineMuxDecoder;
+	Mux           bitlineMux;
+	RowDecoder    senseAmpMuxLev1Decoder;
+	Mux           senseAmpMuxLev1;
+	RowDecoder    senseAmpMuxLev2Decoder;
+	Mux           senseAmpMuxLev2;
+	Precharger    precharger;
+	SenseAmp      senseAmp;
+	//Qing: subarray buffer for differential write
+	Buffer        subarrayBuffer;
 };
 
 #endif /* SUBARRAY_H_ */

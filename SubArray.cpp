@@ -428,6 +428,14 @@ void SubArray::Initialize(long long _numRow, long long _numColumn, bool _multipl
 	if (!invalid) {
 		bitlineMux.CalculateRC();
 	}
+	
+	//Qing: initialize subarray buffer,
+	//do not consider buffering control signals for now
+	subarrayBuffer.Initialize(1, numColumn);
+	subarrayBuffer.CalculateArea();
+	subarrayBuffer.CalculateLatency();
+	subarrayBuffer.CalculatePower();
+	//Qing.
 
 	initialized = true;
 }
@@ -487,6 +495,11 @@ void SubArray::CalculateArea() {
 		senseAmpMuxLev2Decoder.CalculateArea();
 		addWidth = MAX(addWidth, senseAmpMuxLev2Decoder.width);
 
+		//Qing: add subarray buffer's height
+		//assume the buffer has the same width as the subarray
+		addHeight += subarrayBuffer.height;
+		//Qing.
+		
 		width += addWidth;
 		height += addHeight;
 		area = width * height;
@@ -868,7 +881,9 @@ void SubArray::CalculatePower() {
 		}
 		leakage += rowDecoder.leakage + bitlineMuxDecoder.leakage + senseAmpMuxLev1Decoder.leakage
 				+ senseAmpMuxLev2Decoder.leakage + precharger.leakage + bitlineMux.leakage
-				+ senseAmp.leakage + senseAmpMuxLev1.leakage + senseAmpMuxLev2.leakage;
+				+ senseAmp.leakage + senseAmpMuxLev1.leakage + senseAmpMuxLev2.leakage
+				//Qing: subarray buffer leakage
+				+ subarrayBuffer.leakage + subarrayBuffer.xorLeakage;
 	}
 }
 
@@ -943,6 +958,8 @@ SubArray & SubArray::operator=(const SubArray &rhs) {
 	senseAmpMuxLev2 = rhs.senseAmpMuxLev2;
 	precharger = rhs.precharger;
 	senseAmp = rhs.senseAmp;
+	//Qing
+	subarrayBuffer = rhs.subarrayBuffer;
 
 	return *this;
 }
